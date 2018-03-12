@@ -1,0 +1,93 @@
+/************************************************************************/
+/* $Id: MainP.cpp 65 2010-09-08 06:48:36Z yan.qi.asu $                                                                 */
+/************************************************************************/
+
+#include <limits>
+#include <set>
+#include <map>
+#include <queue>
+#include <string>
+#include <vector>
+#include <fstream>
+#include <iostream>
+#include <algorithm>
+#include "YGraphElements.h"
+#include "YGraph.h"
+#include "DijkstraShortestPathAlg.h"
+#include "YenTopKShortestPathsAlg.h"
+#include"Graph.h"
+#include<fstream>
+using namespace std;
+
+vector<vector<int>> testYenAlg( Graph*G,const int& k, 
+	             vector<link> lk, 
+				 const int& size,
+				 const int& s,
+				 const int& d,
+				 const int& nodes )
+{
+	YGraph my_graph;
+
+	my_graph.set_number_vertices( nodes );
+
+	for ( int i = 0; i < size; i++ )
+	{
+		my_graph.add_link( lk[ i ].u, lk[ i ].v, lk[ i ].weight );
+	}	
+
+	my_graph.setv();
+	
+	YenTopKShortestPathsAlg yenAlg(my_graph, 
+		                           my_graph.get_vertex(s), 
+		                           my_graph.get_vertex(d) );
+
+	// Output the k-intest paths
+	int i = 0;
+	vector<vector<int>> result;
+	/*while( yenAlg.has_next() && i < k )
+	{
+		++i;
+		BasePath* bp=yenAlg.next();
+		//bp->PrintOut(cout);
+		int start = bp->GetVertex(0)->getID();
+		vector<int> vv;
+		for (int i = 1; i < bp->m_vtVertexList.size(); i++)
+		{
+			int next = bp->GetVertex(i)->getID();
+			
+			vv.push_back(G->st2E[start*(nodes + 1) + next]);
+			start = next;
+		}
+		//if (vv.size() < k)
+			//cout << "warning no enough route!" << endl;
+		result.push_back(vv);
+		
+	}*/
+	return result;
+}
+
+
+vector<vector<int>> Kint(Graph * G,int s,int t,int k)
+{
+	vector<link> lks;
+	for (int i = 0; i < G->m; i++)
+	{
+		link l = { G->incL[i].tail, G->incL[i].head, 1 };
+		lks.push_back(l);
+
+	}
+	int array_size = lks.size();//sizeof( lks ) / sizeof( lks[ 0 ] );
+	int start = s;
+	int end = t;
+	int nodes = G->n;
+
+
+	return testYenAlg(G,
+		        k, 
+		        lks, 
+				array_size, 
+				start,
+				end, 
+				nodes );
+
+}
